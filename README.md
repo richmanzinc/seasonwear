@@ -48,6 +48,22 @@ node scripts/fetch.mjs  # data/items.json を本番データで再生成
 
 > アプリIDの Secret が未設定のうちは、サンプルデータのまま公開されます。
 
+## Google AdSense
+
+広告枠はトップページ（グリッド上/下）と各SEOページ（本文上/下）に設置済み。
+未設定の間は「広告スペース」のプレースホルダが表示される。
+
+有効化する手順:
+
+1. AdSense で審査・承認を受ける（サイト公開後）。
+2. `config/site.json` を編集:
+   - `adsense.enabled` を `true`
+   - `adsense.client` に発行された `ca-pub-...`
+   - `adsense.slots` に各枠の広告ユニットID（任意。自動広告なら空でも可）
+3. 再デプロイ（静的ページは `node scripts/build-pages.mjs` で再生成）。
+
+> 広告の表示位置は `index.html` / 生成ページの `<div class="ad-slot" data-ad="...">` で管理。
+
 ## 法的・規約メモ
 
 - 本サイトは楽天アフィリエイトの広告を含む旨を明記（ステマ規制 / 景表法対応）。

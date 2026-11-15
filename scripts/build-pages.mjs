@@ -63,13 +63,17 @@ function pageHTML({ depth, title, desc, canonical, h1, lead, breadcrumb, body })
   <nav class="breadcrumb">${breadcrumb}</nav>
   <h1 class="page-h1">${esc(h1)}</h1>
   ${lead ? `<p class="lead">${esc(lead)}</p>` : ""}
+  <div class="ad-slot" data-ad="page-top" aria-hidden="true"></div>
   ${body}
+  <div class="ad-slot" data-ad="page-bottom" aria-hidden="true"></div>
   <p class="back"><a href="${rel}">← すべての商品を見る（${esc(SITE_NAME)}）</a></p>
 </main>
 <footer class="site-footer"><div class="wrap">
   <p>${esc(SITE_NAME)} は楽天市場の商品を紹介するアフィリエイトサイトです。掲載価格・在庫は楽天側の表示が最新です。</p>
   <p class="credit">Supported by <a href="https://webservice.rakuten.co.jp/" target="_blank" rel="noopener">Rakuten Developers</a></p>
 </div></footer>
+<script>window.SEASONWEAR_ROOT = "${rel}";</script>
+<script src="${rel}assets/ads.js" defer></script>
 </body>
 </html>
 `;

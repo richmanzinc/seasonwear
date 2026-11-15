@@ -131,6 +131,15 @@ input[type="search"]:focus { outline: none; border-color: var(--muted); }
 
 .empty { text-align: center; color: var(--muted); padding: 48px 0; }
 
+/* 広告枠（AdSense） */
+.ad-slot { margin: 18px 0; }
+.ad-slot--placeholder {
+  min-height: 90px; display: flex; align-items: center; justify-content: center;
+  border: 1px dashed var(--line); border-radius: 10px;
+  color: var(--muted); font-size: 11px; letter-spacing: .12em; background: var(--surface);
+}
+.ad-slot .adsbygoogle { display: block; }
+
 /* SEO静的ページ */
 .brand-link { text-decoration: none; }
 .breadcrumb { font-size: 12.5px; color: var(--muted); padding: 18px 0 4px; }

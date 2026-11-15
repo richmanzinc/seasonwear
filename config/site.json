@@ -1,0 +1,13 @@
+{
+  "_comment": "サイト共通設定。Google AdSense を使うときは enabled を true にし、client に発行された 'ca-pub-...' を入れる。slots は各広告枠の広告ユニットID（AdSense管理画面で発行）。未設定の間は『広告スペース』のプレースホルダが表示される。",
+  "adsense": {
+    "enabled": false,
+    "client": "ca-pub-XXXXXXXXXXXXXXXX",
+    "slots": {
+      "top": "0000000000",
+      "bottom": "0000000000",
+      "page-top": "0000000000",
+      "page-bottom": "0000000000"
+    }
+  }
+}
