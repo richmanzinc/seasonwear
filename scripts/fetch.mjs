@@ -1,5 +1,6 @@
-// 楽天市場 商品検索API からブランド別に古着を取得し、
-// デリバリーシーズンが明記された商品だけを data/items.json に書き出す。
+// 楽天市場 商品検索API から、信頼できる大手古着チェーン（config/shops.json）の
+// 店内のみを対象にブランド別に取得し、デリバリーシーズンが明記された商品だけを
+// data/items.json に書き出す。
 //
 // 使い方:
 //   RAKUTEN_APP_ID=xxx RAKUTEN_AFFILIATE_ID=yyy node scripts/fetch.mjs
@@ -15,12 +16,11 @@ const ROOT = join(__dirname, "..");
 
 const API = "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601";
 
-// 取得パラメータ（省エネ設定）
-const PAGES_PER_KEYWORD = 2;   // キーワードごとに取得するページ数（1ページ30件）
-const HITS = 30;               // 1ページ件数（最大30）
-const MAX_PER_BRAND = 48;      // シーズン絞り込み後のブランド上限
-const SLEEP_MS = 1100;         // API マナー（1リクエスト/秒強）
-const USED_KEYWORD = "古着";    // 横断検索に付与する語
+// 取得パラメータ
+const PAGES_PER_PAIR = 3; // (ブランド×ショップ) ごとの最大ページ数（1ページ30件）
+const HITS = 30; // 1ページ件数（最大30）
+const MAX_PER_BRAND = 60; // シーズン絞り込み後のブランド上限
+const SLEEP_MS = 1100; // API マナー（1リクエスト/秒強）
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -30,20 +30,19 @@ async function loadDotenv() {
     const txt = await readFile(join(ROOT, ".env"), "utf8");
     for (const line of txt.split("\n")) {
       const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/i);
-      if (m && !process.env[m[1]]) {
-        process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
-      }
+      if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
     }
   } catch {
     /* .env が無くてもOK */
   }
 }
 
-async function searchPage({ appId, affId, keyword, page }) {
+async function searchPage({ appId, affId, keyword, shopCode, page }) {
   const url = new URL(API);
   url.searchParams.set("applicationId", appId);
   if (affId) url.searchParams.set("affiliateId", affId);
   url.searchParams.set("keyword", keyword);
+  url.searchParams.set("shopCode", shopCode); // ← 信頼ショップ店内に限定
   url.searchParams.set("hits", String(HITS));
   url.searchParams.set("page", String(page));
   url.searchParams.set("imageFlag", "1"); // 画像ありのみ
@@ -53,11 +52,12 @@ async function searchPage({ appId, affId, keyword, page }) {
   const res = await fetch(url, { headers: { "User-Agent": "seasonwear-bot" } });
   if (res.status === 429) {
     await sleep(3000);
-    return searchPage({ appId, affId, keyword, page });
+    return searchPage({ appId, affId, keyword, shopCode, page });
   }
+  // shopCode にそのブランドが無い等は 400 が返ることがある → 空扱い
+  if (res.status === 400) return [];
   if (!res.ok) throw new Error(`API ${res.status}: ${await res.text()}`);
   const data = await res.json();
-  // formatVersion=2 では data.Items が Item オブジェクトの配列
   return Array.isArray(data.Items) ? data.Items : [];
 }
 
@@ -74,23 +74,30 @@ async function main() {
   }
 
   const brandsCfg = JSON.parse(await readFile(join(ROOT, "config", "brands.json"), "utf8"));
+  const shopsCfg = JSON.parse(await readFile(join(ROOT, "config", "shops.json"), "utf8"));
+  const trustedShops = shopsCfg.trusted || [];
+  if (!trustedShops.length) {
+    console.error("ERROR: config/shops.json の trusted が空です。");
+    process.exit(1);
+  }
+
   const allItems = [];
 
   for (const brand of brandsCfg.brands) {
     const seen = new Set();
     const picked = [];
+    const keyword = brand.keywords[0]; // 大手店内なので主キーワード1つで十分
 
-    for (const kw of brand.keywords) {
+    for (const shop of trustedShops) {
       if (picked.length >= MAX_PER_BRAND) break;
-      const keyword = `${kw} ${USED_KEYWORD}`;
 
-      for (let page = 1; page <= PAGES_PER_KEYWORD; page++) {
+      for (let page = 1; page <= PAGES_PER_PAIR; page++) {
         if (picked.length >= MAX_PER_BRAND) break;
         let raw;
         try {
-          raw = await searchPage({ appId, affId, keyword, page });
+          raw = await searchPage({ appId, affId, keyword, shopCode: shop.code, page });
         } catch (e) {
-          console.warn(`  skip ${brand.id} "${keyword}" p${page}: ${e.message}`);
+          console.warn(`  skip ${brand.id}@${shop.code} p${page}: ${e.message}`);
           await sleep(SLEEP_MS);
           continue;
         }
@@ -107,11 +114,10 @@ async function main() {
       }
     }
 
-    console.log(`${brand.label}: ${picked.length} 件（シーズン明記のみ）`);
+    console.log(`${brand.label}: ${picked.length} 件（大手ショップ・シーズン明記のみ）`);
     allItems.push(...picked);
   }
 
-  // 新しいシーズン順 → 価格順に並べておく（UIでも並べ替え可）
   allItems.sort(
     (a, b) => b.seasonYear - a.seasonYear || (a.seasonType < b.seasonType ? 1 : -1)
   );

@@ -18,7 +18,6 @@ const WOMEN = [
   { g: "レディース", items: ["ロング ワンピース", "ダブル コート", "プリーツ スカート", "モヘア ニット", "ウール スラックス", "ショート ブルゾン"] },
 ];
 const UNI = ["オーバーサイズ シャツ", "スウェット プルオーバー", "ナイロン アノラック", "デニム ジャケット"];
-const SHOPS = ["RAGTAG楽天市場店", "カインドオル楽天市場店", "ベクトル楽天市場店", "2nd STREET楽天市場店"];
 
 // 簡易乱数（毎回同じ結果にする）
 let seed = 42;
@@ -38,6 +37,8 @@ function searchUrl(label, season) {
 
 async function main() {
   const brandsCfg = JSON.parse(await readFile(join(ROOT, "config", "brands.json"), "utf8"));
+  const shopsCfg = JSON.parse(await readFile(join(ROOT, "config", "shops.json"), "utf8"));
+  const SHOPS = (shopsCfg.trusted || []).map((s) => s.name); // 大手ショップ名のみ
   const out = [];
   let hue = 0;
 
