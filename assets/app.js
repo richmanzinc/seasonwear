@@ -4,7 +4,8 @@
 const state = {
   all: [],
   gender: "all",
-  season: "all",
+  year: "all",
+  type: "all",
   sort: "new",
   brands: new Set(), // 空 = すべてのブランド
   brandQuery: "", // ブランド検索欄の入力
@@ -43,7 +44,7 @@ async function init() {
     return;
   }
   buildBrandChips();
-  buildSeasonOptions();
+  buildYearOptions();
   bindControls();
   render();
 }
@@ -100,21 +101,15 @@ function updateBrandCount() {
   $("#brand-count").textContent = n ? `（${n} 選択中）` : "（タップで複数選択）";
 }
 
-function buildSeasonOptions() {
-  const sel = $("#f-season");
-  const map = new Map();
-  for (const it of state.all) {
-    const key = `${it.seasonYear}-${it.seasonType}`;
-    if (!map.has(key)) map.set(key, it);
-  }
-  const seasons = [...map.values()].sort(
-    (a, b) => b.seasonYear - a.seasonYear || (a.seasonType < b.seasonType ? 1 : -1)
-  );
-  sel.innerHTML = '<option value="all">すべてのシーズン</option>';
-  for (const s of seasons) {
+function buildYearOptions() {
+  const sel = $("#f-year");
+  // データに実在する年だけを新しい順で
+  const years = [...new Set(state.all.map((i) => i.seasonYear))].sort((a, b) => b - a);
+  sel.innerHTML = '<option value="all">すべての年</option>';
+  for (const y of years) {
     const o = document.createElement("option");
-    o.value = `${s.seasonYear}-${s.seasonType}`;
-    o.textContent = s.seasonLabel;
+    o.value = String(y);
+    o.textContent = `${y} 年`;
     sel.appendChild(o);
   }
 }
@@ -127,7 +122,8 @@ function bindControls() {
     state.gender = btn.dataset.val;
     render();
   });
-  $("#f-season").addEventListener("change", (e) => { state.season = e.target.value; render(); });
+  $("#f-year").addEventListener("change", (e) => { state.year = e.target.value; render(); });
+  $("#f-type").addEventListener("change", (e) => { state.type = e.target.value; render(); });
   $("#f-sort").addEventListener("change", (e) => { state.sort = e.target.value; render(); });
   $("#f-brand-search").addEventListener("input", (e) => {
     state.brandQuery = e.target.value;
@@ -145,10 +141,8 @@ function applyFilters() {
   if (state.brands.size) items = items.filter((i) => state.brands.has(i.brand));
   if (state.gender !== "all")
     items = items.filter((i) => i.gender === state.gender || i.gender === "UNISEX");
-  if (state.season !== "all") {
-    const [y, t] = state.season.split("-");
-    items = items.filter((i) => String(i.seasonYear) === y && i.seasonType === t);
-  }
+  if (state.year !== "all") items = items.filter((i) => String(i.seasonYear) === state.year);
+  if (state.type !== "all") items = items.filter((i) => i.seasonType === state.type);
   switch (state.sort) {
     case "price-asc": items.sort((a, b) => a.price - b.price); break;
     case "price-desc": items.sort((a, b) => b.price - a.price); break;
