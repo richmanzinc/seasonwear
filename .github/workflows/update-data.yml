@@ -1,0 +1,60 @@
+name: Update data & deploy
+
+on:
+  schedule:
+    - cron: "0 3 * * *" # 毎日 03:00 UTC（＝12:00 JST頃）
+  workflow_dispatch: {} # 手動実行も可
+  push:
+    branches: [main]
+
+permissions:
+  contents: write # items.json のコミット用
+  pages: write # GitHub Pages デプロイ用
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+      RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # アプリIDが設定済みのときだけ本番データを取得。
+      # 未設定のうちは data/items.json（サンプル）のまま公開する。
+      - name: Fetch latest items from Rakuten
+        if: ${{ env.RAKUTEN_APP_ID != '' }}
+        run: node scripts/fetch.mjs
+
+      - name: Commit updated data
+        if: ${{ env.RAKUTEN_APP_ID != '' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- data/items.json; then
+            git add data/items.json
+            git commit -m "chore: update items.json [skip ci]"
+            git push
+          else
+            echo "No data changes."
+          fi
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "."
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

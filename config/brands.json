@@ -1,0 +1,30 @@
+{
+  "_comment": "対象ブランド定義。keyword = 楽天検索に使う語（複数可）。追加はこの配列に足すだけ。",
+  "brands": [
+    { "id": "comme-des-garcons", "label": "COMME des GARÇONS", "category": "designer", "keywords": ["コムデギャルソン", "COMME des GARCONS"] },
+    { "id": "yohji-yamamoto", "label": "Yohji Yamamoto", "category": "designer", "keywords": ["ヨウジヤマモト", "Yohji Yamamoto"] },
+    { "id": "issey-miyake", "label": "ISSEY MIYAKE", "category": "designer", "keywords": ["イッセイミヤケ", "ISSEY MIYAKE"] },
+    { "id": "sacai", "label": "sacai", "category": "designer", "keywords": ["サカイ", "sacai"] },
+    { "id": "undercover", "label": "UNDERCOVER", "category": "designer", "keywords": ["アンダーカバー", "UNDERCOVER"] },
+    { "id": "maison-margiela", "label": "Maison Margiela", "category": "designer", "keywords": ["マルジェラ", "Maison Margiela", "Martin Margiela"] },
+    { "id": "rick-owens", "label": "Rick Owens", "category": "designer", "keywords": ["リックオウエンス", "Rick Owens"] },
+    { "id": "raf-simons", "label": "Raf Simons", "category": "designer", "keywords": ["ラフシモンズ", "Raf Simons"] },
+    { "id": "jil-sander", "label": "Jil Sander", "category": "designer", "keywords": ["ジルサンダー", "Jil Sander"] },
+    { "id": "dries-van-noten", "label": "Dries Van Noten", "category": "designer", "keywords": ["ドリスヴァンノッテン", "Dries Van Noten"] },
+    { "id": "kolor", "label": "kolor", "category": "designer", "keywords": ["カラー kolor", "kolor"] },
+    { "id": "number-nine", "label": "Number (N)ine", "category": "designer", "keywords": ["ナンバーナイン", "NUMBER NINE"] },
+
+    { "id": "gucci", "label": "GUCCI", "category": "luxury", "keywords": ["グッチ", "GUCCI"] },
+    { "id": "prada", "label": "PRADA", "category": "luxury", "keywords": ["プラダ", "PRADA"] },
+    { "id": "saint-laurent", "label": "Saint Laurent", "category": "luxury", "keywords": ["サンローラン", "Saint Laurent"] },
+    { "id": "celine", "label": "Celine", "category": "luxury", "keywords": ["セリーヌ", "CELINE"] },
+    { "id": "bottega-veneta", "label": "Bottega Veneta", "category": "luxury", "keywords": ["ボッテガヴェネタ", "Bottega Veneta"] },
+    { "id": "balenciaga", "label": "Balenciaga", "category": "luxury", "keywords": ["バレンシアガ", "Balenciaga"] },
+    { "id": "dior", "label": "Dior", "category": "luxury", "keywords": ["ディオール", "Dior"] },
+    { "id": "louis-vuitton", "label": "Louis Vuitton", "category": "luxury", "keywords": ["ルイヴィトン", "Louis Vuitton"] },
+    { "id": "burberry", "label": "Burberry", "category": "luxury", "keywords": ["バーバリー", "Burberry"] },
+    { "id": "loewe", "label": "Loewe", "category": "luxury", "keywords": ["ロエベ", "LOEWE"] },
+    { "id": "fendi", "label": "Fendi", "category": "luxury", "keywords": ["フェンディ", "FENDI"] },
+    { "id": "miu-miu", "label": "Miu Miu", "category": "luxury", "keywords": ["ミュウミュウ", "Miu Miu"] }
+  ]
+}
