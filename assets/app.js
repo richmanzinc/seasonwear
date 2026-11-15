@@ -3,11 +3,12 @@
 
 const state = {
   all: [],
-  category: "all",
   gender: "all",
   season: "all",
   sort: "new",
   brands: new Set(), // 空 = すべてのブランド
+  brandQuery: "", // ブランド検索欄の入力
+  brandSearchText: {}, // id -> ラベル+キーワードの検索用文字列（日本語読み含む）
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -23,6 +24,19 @@ async function init() {
     state.all = data.items || [];
     renderUpdated(data);
   } catch (e) {
+    /* fallthrough */
+  }
+  try {
+    // ブランド検索を日本語読み（keywords）でも効かせるため config を読む
+    const bRes = await fetch("config/brands.json", { cache: "no-store" });
+    const bData = await bRes.json();
+    for (const b of bData.brands || []) {
+      state.brandSearchText[b.id] = `${b.label} ${(b.keywords || []).join(" ")}`.toLowerCase();
+    }
+  } catch (e) {
+    /* config が読めなくてもラベル検索は動く */
+  }
+  if (!state.all.length) {
     grid.innerHTML = "";
     emptyMsg.hidden = false;
     emptyMsg.textContent = "データを読み込めませんでした。";
@@ -42,19 +56,21 @@ function renderUpdated(data) {
   el.textContent = data.sample ? `サンプルデータ（${label}）` : label;
 }
 
-// カテゴリに応じたブランド一覧（データに存在するものだけ）
-function brandsForCategory() {
+// データに存在するブランド一覧（id→label）
+function allBrands() {
   const seen = new Map();
-  for (const it of state.all) {
-    if (state.category !== "all" && it.category !== state.category) continue;
-    if (!seen.has(it.brand)) seen.set(it.brand, it.brandLabel);
-  }
-  return [...seen.entries()].sort((a, b) => a[1].localeCompare(b[1]));
+  for (const it of state.all) if (!seen.has(it.brand)) seen.set(it.brand, it.brandLabel);
+  return [...seen.entries()].sort((a, b) => a[1].localeCompare(b[1], "ja"));
 }
 
 function buildBrandChips() {
   const box = $("#f-brands");
-  const list = brandsForCategory();
+  const q = state.brandQuery.trim().toLowerCase();
+  const list = allBrands().filter(([id, label]) => {
+    if (!q || state.brands.has(id)) return true;
+    const st = state.brandSearchText[id] || label.toLowerCase();
+    return st.includes(q);
+  });
   box.innerHTML = "";
   for (const [id, label] of list) {
     const b = document.createElement("button");
@@ -70,6 +86,12 @@ function buildBrandChips() {
     });
     box.appendChild(b);
   }
+  if (!list.length) {
+    const p = document.createElement("span");
+    p.className = "muted";
+    p.textContent = "該当するブランドがありません";
+    box.appendChild(p);
+  }
   updateBrandCount();
 }
 
@@ -80,7 +102,6 @@ function updateBrandCount() {
 
 function buildSeasonOptions() {
   const sel = $("#f-season");
-  // データに実在するシーズンだけを新しい順で
   const map = new Map();
   for (const it of state.all) {
     const key = `${it.seasonYear}-${it.seasonType}`;
@@ -99,15 +120,6 @@ function buildSeasonOptions() {
 }
 
 function bindControls() {
-  $("#f-category").addEventListener("click", (e) => {
-    const btn = e.target.closest("button");
-    if (!btn) return;
-    setSegment("#f-category", btn);
-    state.category = btn.dataset.val;
-    state.brands.clear(); // カテゴリ変更時はブランド選択をリセット
-    buildBrandChips();
-    render();
-  });
   $("#f-gender").addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
@@ -117,6 +129,10 @@ function bindControls() {
   });
   $("#f-season").addEventListener("change", (e) => { state.season = e.target.value; render(); });
   $("#f-sort").addEventListener("change", (e) => { state.sort = e.target.value; render(); });
+  $("#f-brand-search").addEventListener("input", (e) => {
+    state.brandQuery = e.target.value;
+    buildBrandChips();
+  });
 }
 
 function setSegment(sel, btn) {
@@ -126,7 +142,6 @@ function setSegment(sel, btn) {
 
 function applyFilters() {
   let items = state.all.slice();
-  if (state.category !== "all") items = items.filter((i) => i.category === state.category);
   if (state.brands.size) items = items.filter((i) => state.brands.has(i.brand));
   if (state.gender !== "all")
     items = items.filter((i) => i.gender === state.gender || i.gender === "UNISEX");

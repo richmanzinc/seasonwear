@@ -21,15 +21,6 @@
   <main class="wrap">
     <section class="controls" aria-label="絞り込み">
       <div class="field">
-        <label>カテゴリ</label>
-        <div class="segmented" id="f-category" role="tablist">
-          <button data-val="all" class="active">すべて</button>
-          <button data-val="designer">デザイナーズ</button>
-          <button data-val="luxury">ラグジュアリー</button>
-        </div>
-      </div>
-
-      <div class="field">
         <label>性別</label>
         <div class="segmented" id="f-gender">
           <button data-val="all" class="active">すべて</button>
@@ -53,7 +44,8 @@
       </div>
 
       <div class="field grow">
-        <label>ブランド <span class="muted" id="brand-count"></span></label>
+        <label for="f-brand-search">ブランド <span class="muted" id="brand-count"></span></label>
+        <input id="f-brand-search" type="search" placeholder="ブランド名で絞り込む（例: ギャルソン、margiela）" autocomplete="off" />
         <div class="brand-chips" id="f-brands"></div>
       </div>
     </section>
