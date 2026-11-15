@@ -19,7 +19,33 @@
   </header>
 
   <main class="wrap">
-    <section class="controls" aria-label="絞り込み">
+    <!-- トップ: 年 / シーズン -->
+    <section class="controls controls-top" aria-label="シーズン絞り込み">
+      <div class="field">
+        <label for="f-year">年（デリバリー）</label>
+        <select id="f-year"><option value="all">すべての年</option></select>
+      </div>
+      <div class="field">
+        <label for="f-type">シーズン</label>
+        <select id="f-type">
+          <option value="all">すべて</option>
+          <option value="SS">SS</option>
+          <option value="AW">AW</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- ブランド -->
+    <section class="brand-block" aria-label="ブランド絞り込み">
+      <div class="field grow">
+        <label for="f-brand-search">ブランド <span class="muted" id="brand-count"></span></label>
+        <input id="f-brand-search" type="search" placeholder="ブランド名で絞り込む（例: ギャルソン、margiela）" autocomplete="off" />
+        <div class="brand-chips" id="f-brands"></div>
+      </div>
+    </section>
+
+    <!-- 性別（ブランドの下） -->
+    <section class="gender-block" aria-label="性別絞り込み">
       <div class="field">
         <label>性別</label>
         <div class="segmented" id="f-gender">
@@ -28,40 +54,22 @@
           <button data-val="WOMEN">ウィメンズ</button>
         </div>
       </div>
-
-      <div class="field">
-        <label for="f-year">年（デリバリー）</label>
-        <select id="f-year"><option value="all">すべての年</option></select>
-      </div>
-
-      <div class="field">
-        <label for="f-type">シーズン</label>
-        <select id="f-type">
-          <option value="all">SS・AW すべて</option>
-          <option value="SS">SS（春夏）</option>
-          <option value="AW">AW（秋冬）</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label for="f-sort">並び替え</label>
-        <select id="f-sort">
-          <option value="new">シーズン新しい順</option>
-          <option value="price-asc">価格 安い順</option>
-          <option value="price-desc">価格 高い順</option>
-        </select>
-      </div>
-
-      <div class="field grow">
-        <label for="f-brand-search">ブランド <span class="muted" id="brand-count"></span></label>
-        <input id="f-brand-search" type="search" placeholder="ブランド名で絞り込む（例: ギャルソン、margiela）" autocomplete="off" />
-        <div class="brand-chips" id="f-brands"></div>
-      </div>
     </section>
 
-    <div class="meta-row">
-      <span id="result-count" class="count"></span>
-      <span id="updated-at" class="muted"></span>
+    <!-- 並び替え（商品の直上・ボタン）＋件数 -->
+    <div class="toolbar">
+      <div class="sort">
+        <span class="sort-label">並び替え</span>
+        <div class="segmented" id="f-sort">
+          <button data-val="new" class="active">新着</button>
+          <button data-val="price-asc">安い順</button>
+          <button data-val="price-desc">高い順</button>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <span id="result-count" class="count"></span>
+        <span id="updated-at" class="muted"></span>
+      </div>
     </div>
 
     <section id="grid" class="grid" aria-live="polite"></section>

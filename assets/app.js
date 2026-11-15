@@ -124,7 +124,13 @@ function bindControls() {
   });
   $("#f-year").addEventListener("change", (e) => { state.year = e.target.value; render(); });
   $("#f-type").addEventListener("change", (e) => { state.type = e.target.value; render(); });
-  $("#f-sort").addEventListener("change", (e) => { state.sort = e.target.value; render(); });
+  $("#f-sort").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    setSegment("#f-sort", btn);
+    state.sort = btn.dataset.val;
+    render();
+  });
   $("#f-brand-search").addEventListener("input", (e) => {
     state.brandQuery = e.target.value;
     buildBrandChips();

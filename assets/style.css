@@ -51,12 +51,26 @@ a { color: inherit; }
 /* Controls */
 .controls {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
+  grid-template-columns: repeat(2, minmax(0,1fr));
   gap: 16px;
-  padding: 20px 0 12px;
+  padding: 20px 0 4px;
 }
 .field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
-.field.grow { grid-column: 1 / -1; }
+
+/* ブランド / 性別ブロック */
+.brand-block { padding: 14px 0 4px; }
+.gender-block { padding: 10px 0 2px; }
+.gender-block .segmented { align-self: flex-start; }
+
+/* 並び替え＋件数（商品の直上） */
+.toolbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  border-top: 1px solid var(--line);
+  margin-top: 16px; padding: 12px 0 14px; flex-wrap: wrap;
+}
+.sort { display: flex; align-items: center; gap: 10px; }
+.sort-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.toolbar-right { display: flex; align-items: baseline; gap: 10px; }
 .field label { font-size: 12px; font-weight: 600; letter-spacing: .02em; }
 select, input[type="search"] {
   appearance: none;
