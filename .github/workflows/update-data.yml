@@ -48,6 +48,9 @@ jobs:
             echo "No data changes."
           fi
 
+      - name: Build SEO pages (brand / brand×season) + sitemap
+        run: node scripts/build-pages.mjs
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

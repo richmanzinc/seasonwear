@@ -131,6 +131,26 @@ input[type="search"]:focus { outline: none; border-color: var(--muted); }
 
 .empty { text-align: center; color: var(--muted); padding: 48px 0; }
 
+/* SEO静的ページ */
+.brand-link { text-decoration: none; }
+.breadcrumb { font-size: 12.5px; color: var(--muted); padding: 18px 0 4px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.page-h1 { font-size: 22px; margin: 6px 0 4px; }
+.lead { color: var(--muted); font-size: 13.5px; margin: 0 0 14px; }
+.season-links { font-size: 13px; margin: 0 0 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.season-links a {
+  text-decoration: none; border: 1px solid var(--line); background: var(--chip);
+  padding: 4px 10px; border-radius: 999px; color: var(--text);
+}
+.season-links a:hover { border-color: var(--muted); }
+.brand-index { list-style: none; padding: 0; columns: 220px; column-gap: 24px; }
+.brand-index li { padding: 5px 0; break-inside: avoid; }
+.brand-index a { text-decoration: none; }
+.brand-index a:hover { text-decoration: underline; }
+.back { margin: 28px 0 8px; }
+.back a { color: var(--muted); font-size: 13px; }
+
 /* Footer */
 .site-footer { border-top: 1px solid var(--line); background: var(--surface); margin-top: 20px; }
 .site-footer .wrap { padding-top: 22px; padding-bottom: 32px; }
