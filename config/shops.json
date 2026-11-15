@@ -1,0 +1,15 @@
+{
+  "_comment": "信頼できる大手ブランド古着チェーンのショップコード。楽天APIの shopCode で絞り込める。ここに入るショップの商品は信頼度『高』として採用し、それ以外は confidence 判定にかける方針（段階2で有効化予定）。code は item.rakuten.co.jp/<code>/ の部分。2026-11 に sacai 検索結果から実在を確認した値。",
+  "trusted": [
+    { "code": "ragtag", "name": "RAGTAG（ブランド古着のラグタグ）", "sid": 253525 },
+    { "code": "auc-vector", "name": "ブランド古着の買取販売ベクトル" },
+    { "code": "vectorpremium", "name": "ブランド古着ベクトルプレミアム店" },
+    { "code": "vector-fukuyama-zaou", "name": "ベクトル 福山蔵王店" },
+    { "code": "v-refine", "name": "ベクトル リファイン" },
+    { "code": "kind-u", "name": "ブランド古着のカインドオル（KIND）" },
+    { "code": "kldinc", "name": "KLD 楽天市場店" },
+    { "code": "luxs", "name": "ブランド古着のリュクス（Luxs）" },
+    { "code": "trade-store", "name": "トレード楽天市場店" }
+  ],
+  "_note_candidates": "未確認の追加候補（コード要確認）: 2nd STREET / RINKAN / JUMBLE STORE / Stay246 / NEXT51 / BOOKOFF系。確認でき次第 trusted に移す。"
+}

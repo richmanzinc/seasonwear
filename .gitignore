@@ -1,0 +1,7 @@
+.env
+node_modules/
+.DS_Store
+
+# 自動生成（build-pages.mjs がビルド時に作る）
+/b/
+/sitemap.xml
